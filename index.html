@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>PinkGlow Habit Pet 🐾</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
 
 <style>
@@ -16,95 +14,40 @@
   --bg1:#ffd6e7;
   --bg2:#fff0f7;
   --ink:#4a2a3a;
-  --muted:#7a4a62;
 }
-*{box-sizing:border-box}
 body{
   margin:0;
   font-family:"Quicksand",system-ui;
   background:linear-gradient(140deg,var(--bg1),var(--bg2));
   color:var(--ink);
 }
-.wrap{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-}
+.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:22px}
 .card{
-  width:100%;
-  max-width:520px;
-  background:rgba(255,255,255,.85);
-  border-radius:28px;
-  padding:22px;
-  box-shadow:0 20px 40px rgba(255,79,161,.2);
-  text-align:center;
+  width:100%;max-width:560px;background:white;border-radius:26px;
+  padding:20px;box-shadow:0 20px 40px rgba(255,79,161,.2);text-align:center
 }
-.logo{
-  font-family:"Pacifico",cursive;
-  font-size:38px;
-  color:var(--pink);
+.logo{font-family:"Pacifico";font-size:36px;color:var(--pink)}
+.pet{font-size:110px;margin:10px 0;transition:.3s}
+.pet.happy{transform:scale(1.15)}
+.petline{font-weight:800;color:#7a4a62;margin-bottom:10px}
+
+.section{margin-top:14px;text-align:left}
+.section b{color:var(--pink)}
+
+.choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.choice{
+  border:1px solid #ffc2dc;border-radius:14px;padding:8px 10px;
+  cursor:pointer;font-weight:700;background:#fff
 }
-.subtitle{
-  margin-top:6px;
-  font-weight:700;
-  color:var(--muted);
-}
-.pet{
-  font-size:120px;
-  margin:18px 0 6px;
-  transition:transform .3s ease;
-}
-.pet.happy{transform:scale(1.1)}
-.pet.sleepy{opacity:.6}
-.petline{
-  font-weight:800;
-  color:var(--muted);
-}
-input{
-  width:100%;
-  padding:12px;
-  border-radius:16px;
-  border:1px solid #ffc2dc;
-  font-size:16px;
-  font-weight:700;
-  margin-top:12px;
-}
+.choice.active{background:var(--pink);color:white;border-color:var(--pink)}
+
 .btn{
-  border:none;
-  border-radius:16px;
-  padding:12px 16px;
-  font-weight:900;
-  cursor:pointer;
-  margin-top:12px;
+  margin-top:12px;border:none;border-radius:16px;padding:12px 16px;
+  font-weight:900;cursor:pointer;background:linear-gradient(135deg,var(--pink),var(--pink2));color:white
 }
-.btn.primary{
-  background:linear-gradient(135deg,var(--pink),var(--pink2));
-  color:white;
-}
-.btn.secondary{
-  background:white;
-  border:1px solid #ffc2dc;
-  color:var(--ink);
-}
-.actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  justify-content:center;
-}
-.small{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:10px;
-}
-a.btn{
-  text-decoration:none;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-}
+.small{font-size:12px;color:#7a4a62;margin-top:10px;text-align:center}
+a.btn{display:inline-block;text-decoration:none}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px}
 </style>
 </head>
 
@@ -112,85 +55,123 @@ a.btn{
 <div class="wrap">
   <div class="card">
     <div class="logo">PinkGlow</div>
-    <div class="subtitle">Habit Pet 🐾 — one gentle habit</div>
 
-    <div id="pet" class="pet sleepy">🐰</div>
-    <div id="petLine" class="petline">Your pet is waiting for you</div>
+    <div id="pet" class="pet">🐰</div>
+    <div id="petLine" class="petline">Choose one gentle habit</div>
 
-    <input id="habitInput" placeholder="Today's gentle habit (example: drink water)" />
+    <!-- PETS -->
+    <div class="section">
+      <b>🐾 Choose your pet</b>
+      <div class="choices" id="petChoices"></div>
+    </div>
+
+    <!-- GOALS -->
+    <div class="section">
+      <b>✅ Pick today’s gentle habit</b>
+      <div class="choices" id="goalChoices"></div>
+    </div>
+
+    <button id="doneBtn" class="btn">✨ I did it</button>
 
     <div class="actions">
-      <button id="doneBtn" class="btn primary">✨ I did it</button>
-      <button id="resetBtn" class="btn secondary">🌙 New day</button>
+      <a class="btn" href="https://ko-fi.com/pinkglow" target="_blank">☕ Support PinkGlow</a>
+      <a class="btn" href="PASTE_YOUR_SELFCARE_PICKS_LINK" target="_blank">🛍️ Self-care picks</a>
     </div>
 
-    <div class="actions" style="margin-top:14px">
-      <a class="btn secondary" href="https://ko-fi.com/pinkglow" target="_blank">☕ Support PinkGlow</a>
-      <a class="btn secondary" href="PASTE_YOUR_SELFCARE_PICKS_LINK" target="_blank">🛍️ Self-care picks</a>
-    </div>
-
-    <div class="small">
-      Tip: Add to Home Screen so your pet lives on your phone 💗
-    </div>
+    <div class="small">Add to Home Screen so your pet lives with you 💗</div>
   </div>
 </div>
 
 <script>
-const pet = document.getElementById("pet");
-const petLine = document.getElementById("petLine");
-const habitInput = document.getElementById("habitInput");
-const doneBtn = document.getElementById("doneBtn");
-const resetBtn = document.getElementById("resetBtn");
+const STORAGE="pinkglow_pet_v2";
+const petEl=document.getElementById("pet");
+const petLine=document.getElementById("petLine");
+const petChoices=document.getElementById("petChoices");
+const goalChoices=document.getElementById("goalChoices");
+const doneBtn=document.getElementById("doneBtn");
 
-const STORAGE = "pinkglow_habit_pet_v1";
+const PETS=["🐰","🐱","🐻","🐼","🦊","🐸"]; // last two = "premium later"
+const GOALS=[
+"Drink water",
+"Take a shower",
+"Go outside for 5 minutes",
+"Stretch your body",
+"Eat something nourishing",
+"Text someone you love",
+"Clean one small thing",
+"Journal for 2 minutes",
+"Do skincare",
+"Early bedtime"
+];
 
-function todayKey(){
-  return new Date().toISOString().slice(0,10);
+function today(){return new Date().toISOString().slice(0,10)}
+function load(){return JSON.parse(localStorage.getItem(STORAGE)||"{}")}
+function save(d){localStorage.setItem(STORAGE,JSON.stringify(d))}
+
+function renderChoices(){
+  PETS.forEach(p=>{
+    const el=document.createElement("div");
+    el.className="choice";
+    el.textContent=p;
+    el.onclick=()=>{
+      data.pet=p;
+      save(data);
+      render();
+    };
+    petChoices.appendChild(el);
+  });
+
+  GOALS.forEach(g=>{
+    const el=document.createElement("div");
+    el.className="choice";
+    el.textContent=g;
+    el.onclick=()=>{
+      data.goal=g;
+      save(data);
+      render();
+    };
+    goalChoices.appendChild(el);
+  });
 }
 
-function load(){
-  return JSON.parse(localStorage.getItem(STORAGE) || "{}");
-}
-function save(data){
-  localStorage.setItem(STORAGE, JSON.stringify(data));
-}
+let data=load();
 
 function render(){
-  const data = load();
-  if(data.date !== todayKey()){
-    pet.className = "pet sleepy";
-    pet.textContent = "🐰";
-    petLine.textContent = "Your pet is waiting for you";
-    habitInput.value = "";
-    return;
+  if(data.date!==today()){
+    data={};
+    save(data);
   }
-  habitInput.value = data.habit || "";
+
+  [...petChoices.children].forEach(c=>{
+    c.classList.toggle("active",c.textContent===data.pet);
+  });
+  [...goalChoices.children].forEach(c=>{
+    c.classList.toggle("active",c.textContent===data.goal);
+  });
+
+  petEl.textContent=data.pet||"🐰";
+
   if(data.done){
-    pet.className = "pet happy";
-    pet.textContent = "🐰✨";
-    petLine.textContent = "Your pet is proud of you 💗";
+    petEl.classList.add("happy");
+    petLine.textContent="Your pet is proud of you 💗";
   }else{
-    pet.className = "pet sleepy";
-    pet.textContent = "🐰";
-    petLine.textContent = "Your pet believes in you";
+    petEl.classList.remove("happy");
+    petLine.textContent=data.goal||"Choose one gentle habit";
   }
 }
 
-doneBtn.onclick = () => {
-  const habit = habitInput.value.trim();
-  if(!habit){
-    alert("Add a gentle habit first 💗");
+doneBtn.onclick=()=>{
+  if(!data.goal){
+    alert("Pick a habit first 💗");
     return;
   }
-  save({date:todayKey(), habit, done:true});
+  data.done=true;
+  data.date=today();
+  save(data);
   render();
 };
 
-resetBtn.onclick = () => {
-  save({});
-  render();
-};
-
+renderChoices();
 render();
 </script>
 </body>
