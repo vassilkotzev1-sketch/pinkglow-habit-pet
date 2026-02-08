@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PinkGlow Habit Pet 🐾</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --pink:#ff4fa1;
+  --pink2:#ff7bc0;
+  --bg1:#ffd6e7;
+  --bg2:#fff0f7;
+  --ink:#4a2a3a;
+  --muted:#7a4a62;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:"Quicksand",system-ui;
+  background:linear-gradient(140deg,var(--bg1),var(--bg2));
+  color:var(--ink);
+}
+.wrap{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+.card{
+  width:100%;
+  max-width:520px;
+  background:rgba(255,255,255,.85);
+  border-radius:28px;
+  padding:22px;
+  box-shadow:0 20px 40px rgba(255,79,161,.2);
+  text-align:center;
+}
+.logo{
+  font-family:"Pacifico",cursive;
+  font-size:38px;
+  color:var(--pink);
+}
+.subtitle{
+  margin-top:6px;
+  font-weight:700;
+  color:var(--muted);
+}
+.pet{
+  font-size:120px;
+  margin:18px 0 6px;
+  transition:transform .3s ease;
+}
+.pet.happy{transform:scale(1.1)}
+.pet.sleepy{opacity:.6}
+.petline{
+  font-weight:800;
+  color:var(--muted);
+}
+input{
+  width:100%;
+  padding:12px;
+  border-radius:16px;
+  border:1px solid #ffc2dc;
+  font-size:16px;
+  font-weight:700;
+  margin-top:12px;
+}
+.btn{
+  border:none;
+  border-radius:16px;
+  padding:12px 16px;
+  font-weight:900;
+  cursor:pointer;
+  margin-top:12px;
+}
+.btn.primary{
+  background:linear-gradient(135deg,var(--pink),var(--pink2));
+  color:white;
+}
+.btn.secondary{
+  background:white;
+  border:1px solid #ffc2dc;
+  color:var(--ink);
+}
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.small{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:10px;
+}
+a.btn{
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="logo">PinkGlow</div>
+    <div class="subtitle">Habit Pet 🐾 — one gentle habit</div>
+
+    <div id="pet" class="pet sleepy">🐰</div>
+    <div id="petLine" class="petline">Your pet is waiting for you</div>
+
+    <input id="habitInput" placeholder="Today's gentle habit (example: drink water)" />
+
+    <div class="actions">
+      <button id="doneBtn" class="btn primary">✨ I did it</button>
+      <button id="resetBtn" class="btn secondary">🌙 New day</button>
+    </div>
+
+    <div class="actions" style="margin-top:14px">
+      <a class="btn secondary" href="https://ko-fi.com/pinkglow" target="_blank">☕ Support PinkGlow</a>
+      <a class="btn secondary" href="PASTE_YOUR_SELFCARE_PICKS_LINK" target="_blank">🛍️ Self-care picks</a>
+    </div>
+
+    <div class="small">
+      Tip: Add to Home Screen so your pet lives on your phone 💗
+    </div>
+  </div>
+</div>
+
+<script>
+const pet = document.getElementById("pet");
+const petLine = document.getElementById("petLine");
+const habitInput = document.getElementById("habitInput");
+const doneBtn = document.getElementById("doneBtn");
+const resetBtn = document.getElementById("resetBtn");
+
+const STORAGE = "pinkglow_habit_pet_v1";
+
+function todayKey(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function load(){
+  return JSON.parse(localStorage.getItem(STORAGE) || "{}");
+}
+function save(data){
+  localStorage.setItem(STORAGE, JSON.stringify(data));
+}
+
+function render(){
+  const data = load();
+  if(data.date !== todayKey()){
+    pet.className = "pet sleepy";
+    pet.textContent = "🐰";
+    petLine.textContent = "Your pet is waiting for you";
+    habitInput.value = "";
+    return;
+  }
+  habitInput.value = data.habit || "";
+  if(data.done){
+    pet.className = "pet happy";
+    pet.textContent = "🐰✨";
+    petLine.textContent = "Your pet is proud of you 💗";
+  }else{
+    pet.className = "pet sleepy";
+    pet.textContent = "🐰";
+    petLine.textContent = "Your pet believes in you";
+  }
+}
+
+doneBtn.onclick = () => {
+  const habit = habitInput.value.trim();
+  if(!habit){
+    alert("Add a gentle habit first 💗");
+    return;
+  }
+  save({date:todayKey(), habit, done:true});
+  render();
+};
+
+resetBtn.onclick = () => {
+  save({});
+  render();
+};
+
+render();
+</script>
+</body>
+</html>
