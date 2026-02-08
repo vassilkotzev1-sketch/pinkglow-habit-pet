@@ -83,14 +83,16 @@ a.btn{display:inline-block;text-decoration:none}
 </div>
 
 <script>
-const STORAGE="pinkglow_pet_v2";
+<script>
+const STORAGE="pinkglow_pet_v3";
+
 const petEl=document.getElementById("pet");
 const petLine=document.getElementById("petLine");
 const petChoices=document.getElementById("petChoices");
 const goalChoices=document.getElementById("goalChoices");
 const doneBtn=document.getElementById("doneBtn");
 
-const PETS=["🐰","🐱","🐻","🐼","🦊","🐸"]; // last two = "premium later"
+const PETS=["🐰","🐱","🐻","🐼","🦊","🐸"];
 const GOALS=[
 "Drink water",
 "Take a shower",
@@ -108,13 +110,44 @@ function today(){return new Date().toISOString().slice(0,10)}
 function load(){return JSON.parse(localStorage.getItem(STORAGE)||"{}")}
 function save(d){localStorage.setItem(STORAGE,JSON.stringify(d))}
 
-function renderChoices(){
+let data = load();
+
+function ensureToday(){
+  if(data.date!==today()){
+    data={date:today(), pet:"🐰", goal:null, done:false};
+    save(data);
+  }
+}
+
+function render(){
+  ensureToday();
+
+  petEl.textContent=data.pet;
+
+  if(data.done){
+    petEl.classList.add("happy");
+    petLine.textContent="Your pet is proud of you 💗";
+  }else{
+    petEl.classList.remove("happy");
+    petLine.textContent=data.goal||"Choose one gentle habit";
+  }
+
+  [...petChoices.children].forEach(c=>{
+    c.classList.toggle("active",c.textContent===data.pet);
+  });
+  [...goalChoices.children].forEach(c=>{
+    c.classList.toggle("active",c.textContent===data.goal);
+  });
+}
+
+function createChoices(){
   PETS.forEach(p=>{
     const el=document.createElement("div");
     el.className="choice";
     el.textContent=p;
     el.onclick=()=>{
       data.pet=p;
+      data.done=false;
       save(data);
       render();
     };
@@ -127,37 +160,12 @@ function renderChoices(){
     el.textContent=g;
     el.onclick=()=>{
       data.goal=g;
+      data.done=false;
       save(data);
       render();
     };
     goalChoices.appendChild(el);
   });
-}
-
-let data=load();
-
-function render(){
-  if(data.date!==today()){
-    data={};
-    save(data);
-  }
-
-  [...petChoices.children].forEach(c=>{
-    c.classList.toggle("active",c.textContent===data.pet);
-  });
-  [...goalChoices.children].forEach(c=>{
-    c.classList.toggle("active",c.textContent===data.goal);
-  });
-
-  petEl.textContent=data.pet||"🐰";
-
-  if(data.done){
-    petEl.classList.add("happy");
-    petLine.textContent="Your pet is proud of you 💗";
-  }else{
-    petEl.classList.remove("happy");
-    petLine.textContent=data.goal||"Choose one gentle habit";
-  }
 }
 
 doneBtn.onclick=()=>{
@@ -166,13 +174,14 @@ doneBtn.onclick=()=>{
     return;
   }
   data.done=true;
-  data.date=today();
   save(data);
   render();
 };
 
-renderChoices();
+createChoices();
 render();
+</script>
+
 </script>
 </body>
 </html>
