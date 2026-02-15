@@ -83,7 +83,6 @@ a.btn{display:inline-block;text-decoration:none}
 </div>
 
 <script>
-<script>
 const STORAGE="pinkglow_pet_v3";
 
 const petEl=document.getElementById("pet");
@@ -141,34 +140,39 @@ function render(){
 }
 
 function createChoices(){
+  petChoices.innerHTML = "";
+  goalChoices.innerHTML = "";
+
   PETS.forEach(p=>{
-    const el=document.createElement("div");
+    const el=document.createElement("button");
+    el.type="button";
     el.className="choice";
     el.textContent=p;
-    el.onclick=()=>{
+    el.addEventListener("click", ()=>{
       data.pet=p;
       data.done=false;
       save(data);
       render();
-    };
+    });
     petChoices.appendChild(el);
   });
 
   GOALS.forEach(g=>{
-    const el=document.createElement("div");
+    const el=document.createElement("button");
+    el.type="button";
     el.className="choice";
     el.textContent=g;
-    el.onclick=()=>{
+    el.addEventListener("click", ()=>{
       data.goal=g;
       data.done=false;
       save(data);
       render();
-    };
+    });
     goalChoices.appendChild(el);
   });
 }
 
-doneBtn.onclick=()=>{
+doneBtn.addEventListener("click", ()=>{
   if(!data.goal){
     alert("Pick a habit first 💗");
     return;
@@ -176,11 +180,10 @@ doneBtn.onclick=()=>{
   data.done=true;
   save(data);
   render();
-};
+});
 
 createChoices();
 render();
-</script>
 
 </script>
 </body>
