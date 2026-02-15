@@ -27,7 +27,7 @@ body{
   padding:20px;box-shadow:0 20px 40px rgba(255,79,161,.2);text-align:center
 }
 .logo{font-family:"Pacifico";font-size:36px;color:var(--pink)}
-.pet{font-size:110px;margin:10px 0;transition:.3s}
+.pet{;margin:10px 0;transition:.3s}
 .pet.happy{transform:scale(1.15)}
 .petline{font-weight:800;color:#7a4a62;margin-bottom:10px}
 
@@ -48,6 +48,50 @@ body{
 .small{font-size:12px;color:#7a4a62;margin-top:10px;text-align:center}
 a.btn{display:inline-block;text-decoration:none}
 .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+
+  .pet{
+  margin:10px 0;
+  transition:.3s;
+}
+.pet-img{
+  width:150px;
+  height:auto;
+  display:block;
+  margin:0 auto;
+  transform-origin:center;
+}
+
+/* Sleepy = gentle breathing */
+.pet.sleepy .pet-img{
+  animation: breathe 3s ease-in-out infinite;
+}
+@keyframes breathe{
+  0%,100%{ transform: scale(1); }
+  50%{ transform: scale(1.06); }
+}
+
+/* Happy = bounce */
+.pet.happy .pet-img{
+  animation: bounce .6s ease;
+}
+@keyframes bounce{
+  0%{ transform: translateY(0); }
+  30%{ transform: translateY(-12px); }
+  60%{ transform: translateY(0); }
+  100%{ transform: translateY(-6px); }
+}
+
+/* Proud = wiggle */
+.pet.proud .pet-img{
+  animation: wiggle .7s ease;
+}
+@keyframes wiggle{
+  0%{ transform: rotate(0); }
+  25%{ transform: rotate(-5deg); }
+  50%{ transform: rotate(5deg); }
+  75%{ transform: rotate(-3deg); }
+  100%{ transform: rotate(0); }
+}
 </style>
 </head>
 
@@ -56,7 +100,9 @@ a.btn{display:inline-block;text-decoration:none}
   <div class="card">
     <div class="logo">PinkGlow</div>
 
-    <div id="pet" class="pet">🐰</div>
+    <div id="pet" class="pet sleepy">
+  <img id="petImg" class="pet-img" src="bunny_sleepy.png" alt="PinkGlow pet">
+</div>
     <div id="petLine" class="petline">Choose one gentle habit</div>
 
     <!-- PETS -->
@@ -83,26 +129,34 @@ a.btn{display:inline-block;text-decoration:none}
 </div>
 
 <script>
-const STORAGE="pinkglow_pet_v3";
+const STORAGE="pinkglow_pet_png_v1";
 
-const petEl=document.getElementById("pet");
+const petWrap=document.getElementById("pet");
+const petImg=document.getElementById("petImg");
 const petLine=document.getElementById("petLine");
 const petChoices=document.getElementById("petChoices");
 const goalChoices=document.getElementById("goalChoices");
 const doneBtn=document.getElementById("doneBtn");
 
-const PETS=["🐰","🐱","🐻","🐼","🦊","🐸"];
+const PETS = [
+  {key:"bunny", label:"Bunny"},
+  {key:"bear",  label:"Bear"},
+  {key:"cat",   label:"Cat"},
+  {key:"panda", label:"Panda"},
+  {key:"fox",   label:"Fox"},
+];
+
 const GOALS=[
-"Drink water",
-"Take a shower",
-"Go outside for 5 minutes",
-"Stretch your body",
-"Eat something nourishing",
-"Text someone you love",
-"Clean one small thing",
-"Journal for 2 minutes",
-"Do skincare",
-"Early bedtime"
+  "Drink water",
+  "Take a shower",
+  "Go outside for 5 minutes",
+  "Stretch your body",
+  "Eat something nourishing",
+  "Text someone you love",
+  "Clean one small thing",
+  "Journal for 2 minutes",
+  "Do skincare",
+  "Early bedtime"
 ];
 
 function today(){return new Date().toISOString().slice(0,10)}
@@ -113,29 +167,37 @@ let data = load();
 
 function ensureToday(){
   if(data.date!==today()){
-    data={date:today(), pet:"🐰", goal:null, done:false};
+    data={date:today(), pet:"bunny", goal:null, done:false};
     save(data);
   }
+}
+
+function moodForState(){
+  if(data.done) return "proud";
+  if(data.goal) return "happy";
+  return "sleepy";
+}
+
+function updatePet(){
+  const mood = moodForState();
+  petWrap.className = "pet " + mood;
+  petImg.src = `${data.pet}_${mood}.png`;
 }
 
 function render(){
   ensureToday();
 
-  petEl.textContent=data.pet;
+  petLine.textContent = data.done
+    ? "Your pet is proud of you 💗"
+    : (data.goal || "Choose one gentle habit");
 
-  if(data.done){
-    petEl.classList.add("happy");
-    petLine.textContent="Your pet is proud of you 💗";
-  }else{
-    petEl.classList.remove("happy");
-    petLine.textContent=data.goal||"Choose one gentle habit";
-  }
+  updatePet();
 
   [...petChoices.children].forEach(c=>{
-    c.classList.toggle("active",c.textContent===data.pet);
+    c.classList.toggle("active", c.dataset.pet === data.pet);
   });
   [...goalChoices.children].forEach(c=>{
-    c.classList.toggle("active",c.textContent===data.goal);
+    c.classList.toggle("active", c.dataset.goal === (data.goal || ""));
   });
 }
 
@@ -147,9 +209,10 @@ function createChoices(){
     const el=document.createElement("button");
     el.type="button";
     el.className="choice";
-    el.textContent=p;
+    el.textContent=p.label;
+    el.dataset.pet = p.key;
     el.addEventListener("click", ()=>{
-      data.pet=p;
+      data.pet=p.key;
       data.done=false;
       save(data);
       render();
@@ -162,6 +225,7 @@ function createChoices(){
     el.type="button";
     el.className="choice";
     el.textContent=g;
+    el.dataset.goal = g;
     el.addEventListener("click", ()=>{
       data.goal=g;
       data.done=false;
